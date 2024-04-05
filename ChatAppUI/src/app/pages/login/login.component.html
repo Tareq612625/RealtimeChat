@@ -1,0 +1,22 @@
+<div class="parent">
+    <div class="main">  	
+        <input type="checkbox" id="chk" aria-hidden="true">
+    
+            <div class="signup">
+                <form>
+                    <label for="chk" aria-hidden="true">Sign up</label>
+                    <input type="text" name="firstName" [(ngModel)]="RegnObj.firstName" placeholder="First name" required="">
+                    <input type="text" name="lastName" [(ngModel)]="RegnObj.lastName" placeholder="Last name" required="">
+                    <input type="email" name="email" [(ngModel)]="RegnObj.email" placeholder="example@gmail.com" required="">
+                    <button (click)="onRegistration()">Sign up</button>
+                </form>
+            </div>
+            <div class="login">
+                <form>
+                    <label for="chk" aria-hidden="true">Login</label>
+                    <input type="email" name="email" [(ngModel)]="loginObj.email" placeholder="Email" required="">
+                    <button (click)="onLogin()" id="login">Login</button>
+                </form>
+            </div>           
+    </div>
+</div>
