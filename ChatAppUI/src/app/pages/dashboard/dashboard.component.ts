@@ -32,7 +32,13 @@ export class DashboardComponent implements OnInit {
   users:any;
   chatUser:any;
 
-  constructor(private http: HttpClient, private router: Router,private messageService: MessageService) {
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private messageService: MessageService,
+    private userService: UserService 
+    ) 
+  {
     this.hubConnection = new HubConnectionBuilder()
       .withUrl('https://localhost:7234/ChatHub')
       .build();
@@ -54,19 +60,30 @@ ngOnInit() {
        }
      })
 
-  this.http.get('https://localhost:7234/api/UserInfo/GetAllUser').subscribe(
-    (user: any) => {
-      if(user){
-       //this.users=user.filter(x=>x.email!==this.loggedInUserInfo);
-        // this.users.forEach(item=>{
-        //   item['isActive']=false;
-        // })
-        this.makeItOnline();
-        }
-    },
-    err => {
-        console.log(err);
+//   this.http.get('https://localhost:7234/api/UserInfo/GetAllUser').subscribe(
+//     (user: any) => {
+//       if(user){
+//        //this.users=user.filter(x=>x.email!==this.loggedInUserInfo);
+//         // this.users.forEach(item=>{
+//         //   item['isActive']=false;
+//         // })
+//         this.makeItOnline();
+//         }
+//     },
+//     err => {
+//         console.log(err);
+//     }
+// );
+this.userService.getAllUsers().subscribe(
+  (user: any) => {
+    if (user) {
+      this.users = user;
+      this.makeItOnline();
     }
+  },
+  err => {
+    console.log(err);
+  }
 );
 
   this.hubConnection = new HubConnectionBuilder().withUrl('https://localhost:7234/ChatHub').build();
