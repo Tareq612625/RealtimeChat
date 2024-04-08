@@ -29,3 +29,15 @@ Development Environment Setup
 5.Install the latest Node.js LTS
 6.Run npm install -g @angular/cli to install latest version of angular CLI
 7.Download source code from https://github.com/Tareq612625/RealtimeChat
+9.Run Web API application
+10. Run Angular Project 
+11. Browse http://localhost:4500 to view real time chat app in browser
+
+Database Configuration ( MSSQL Server )
+---------------------------------------
+Update the ConnectionString int appsettings.json , so that application can point to a valid SQL Server instance.
+
+  "ConnectionStrings": {
+  "DefaultConnection": "Data Source=your server name;Initial Catalog=dbname;User ID=sa;Password=123;Integrated Security=false;MultipleActiveResultSets=True;TrustServerCertificate=True"
+}
+When you run update-database command, the migrations will be applied and the database will be automatically created.
