@@ -24,13 +24,12 @@ export class DashboardComponent implements OnInit {
   };
   readonly ChatHubURI = environment.chatHubUrl
   loggedInUserInfo = JSON.parse(localStorage.getItem("login-user") ?? "{}");
-  //loggedInUserInfo = localStorage.getItem("login-user");
+  users: any[] = [];
   private hubConnection: HubConnection;
-  user: any; // Define a variable to store user information
+  user: any;
   messages: any[] = [];
   displayMessages: any[] = [];
   connectedUsers: any[] = [];
-  users:any;
   chatUser:any;
 
   constructor(
@@ -56,7 +55,7 @@ ngOnInit() {
        }
      })
 
-//   this.http.get('https://localhost:7234/api/UserInfo/GetAllUser').subscribe(
+//   this.userService.getAllUsers().subscribe(
 //     (user: any) => {
 //       if(user){
 //        //this.users=user.filter(x=>x.email!==this.loggedInUserInfo);
@@ -71,38 +70,49 @@ ngOnInit() {
 //     }
 // );
 this.userService.getAllUsers().subscribe(
-  (user: any) => {
-    if (user) {
-      this.users = user;
-      this.makeItOnline();
+  (data:any) => {
+    if(data){
+      const array = Object.values(data);
+      for (let i = 0; i < array.length; i++) {
+        const obj = array[i];
+        console.log(obj);
+        this.users.push(obj);
+      }     
+    this.users=this.users.filter(x=>x.email!==this.loggedInUserInfo.email);
+    this.users.forEach(item=>{
+      item['isActive']=false;
+    })
+    this.makeItOnline();
     }
   },
   err => {
     console.log(err);
-  }
+  },
 );
 
-  this.hubConnection = new HubConnectionBuilder().withUrl(this.ChatHubURI).build();
-  const self = this;
-  this.hubConnection.start()
-    .then(() => {
-      self.hubConnection.invoke("PublishUserOnConnect", this.loggedInUserInfo.id, this.loggedInUserInfo.firstName, this.loggedInUserInfo.userName)
-        .then(() => console.log('User Sent Successfully'))
-        .catch(err => console.error(err));
 
-      this.hubConnection.on("BroadcastUserOnConnect", Usrs => {
-        this.connectedUsers = Usrs;
-        this.makeItOnline();
+this.hubConnection = new HubConnectionBuilder().withUrl(this.ChatHubURI).build();
+const self = this;
+this.hubConnection.start()
+  .then(() => {
+    self.hubConnection.invoke("PublishUserOnConnect", this.loggedInUserInfo.id, this.loggedInUserInfo.firstName, this.loggedInUserInfo.userName)
+      .then(() => console.log('User Sent Successfully'))
+      .catch(err => console.error(err));
+
+    this.hubConnection.on("BroadcastUserOnConnect", (Usrs: any[]) => {
+      this.connectedUsers = Usrs;
+      this.makeItOnline();
+    });
+    this.hubConnection.on("BroadcastUserOnDisconnect", (Usrs: any[]) => {
+      this.connectedUsers = Usrs;
+      this.users.forEach((item: any) => {
+        item.isOnline = false;
       });
-      this.hubConnection.on("BroadcastUserOnDisconnect", Usrs => {
-        this.connectedUsers = Usrs;
-        // this.users.forEach(item => {
-        //   item.isOnline = false;
-        // });
-        this.makeItOnline();
-      });
-    })
-    .catch(err => console.log(err));
+      this.makeItOnline();
+    });
+  })
+  .catch(err => console.log(err));
+
 
   this.hubConnection.on('BroadCastDeleteMessage', (connectionId, message) => {
     let deletedMessage = this.messages.find(x => x.id === message.id);
@@ -119,13 +129,13 @@ this.userService.getAllUsers().subscribe(
     console.log(message);
     message.type = 'received';
     this.messages.push(message);
-    //let curentUser = this.users.find(x => x.id === message.sender);
-    //this.chatUser = curentUser;
-    // this.users.forEach(item => {
-    //   item['isActive'] = false;
-    // });
-    // var user = this.users.find(x => x.id == this.chatUser.id);
-    // user['isActive'] = true;
+    let curentUser = this.users.find(x => x.id === message.sender);
+    this.chatUser = curentUser;
+    this.users.forEach(item => {
+      item['isActive'] = false;
+    });
+    var user = this.users.find(x => x.id == this.chatUser.id);
+    user['isActive'] = true;
     this.displayMessages = this.messages.filter(x => (x.type === 'sent' && x.receiver === this.chatUser.id) || (x.type === 'received' && x.sender === this.chatUser.id));
   });
 }
@@ -150,21 +160,18 @@ this.userService.getAllUsers().subscribe(
         .catch(err => console.error(err));
     }
   }
-  // openChat(user) {
-  //   // this.users.forEach(item => {
-  //   //   item['isActive'] = false;
-  //   // });
-  //   user['isActive'] = true;
-  //   this.chatUser = user;
-  //   this.displayMessages = this.messages.filter(x => (x.type === 'sent' && x.receiver === this.chatUser.id) || (x.type === 'recieved' && x.sender === this.chatUser.id));;
-  // }
+  openChat(user: any): void {
+    user.isActive = true;
+    this.chatUser = user;
+    this.displayMessages = this.messages.filter(x => (x.type === 'sent' && x.receiver === this.chatUser.id) || (x.type === 'received' && x.sender === this.chatUser.id));
+  }
    makeItOnline() {
     if (this.connectedUsers && this.users) {
       this.connectedUsers.forEach(item => {
-        // var u = this.users.find(x => x.userName == item.username);
-        // if (u) {
-        //   u.isOnline = true;
-        // }
+        var u = this.users.find(x => x.userName == item.username);
+        if (u) {
+          u.isOnline = true;
+        }
       })
     }
   }

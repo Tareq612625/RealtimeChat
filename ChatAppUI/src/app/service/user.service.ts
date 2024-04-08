@@ -18,5 +18,6 @@ export class UserService {
   }
   getAllUsers() {
     return this.http.get(`${this.BaseURI}/UserInfo/GetAllUser`);
+    
   }
 }
