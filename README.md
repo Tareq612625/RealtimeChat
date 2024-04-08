@@ -50,9 +50,9 @@ Development Environment Setup
 
 8.Run Web API application
 
-9. Run Angular Project
+9.Run Angular Project
     
-10. Browse http://localhost:4500 to view real time chat app in browser
+10.Browse http://localhost:4500 to view real time chat app in browser
 
 Database Configuration ( MSSQL Server )
 ---------------------------------------
