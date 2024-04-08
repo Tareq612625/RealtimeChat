@@ -6,6 +6,8 @@ import {  Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
+import { environment } from '../../environments/environment';
+
 import {MessageService} from '../../service/message.service'
 import {UserService} from '../../service/user.service'
 import { Guid } from 'guid-typescript';
@@ -23,10 +25,11 @@ export class ChatComponent {
   public messages: string[] = [];
   public user: string = "";
   public message: string = "";
+  readonly ChatHubURI = environment.chatHubUrl
 
   constructor(private http: HttpClient) {
     this.connection = new HubConnectionBuilder()
-      .withUrl('https://localhost:7234/ChatHub')
+      .withUrl(this.ChatHubURI)
       .build();
   }
 

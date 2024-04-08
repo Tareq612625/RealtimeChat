@@ -9,6 +9,7 @@ import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
 import {MessageService} from '../../service/message.service'
 import {UserService} from '../../service/user.service'
 import { Guid } from 'guid-typescript';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-dashboard',
@@ -21,7 +22,7 @@ export class DashboardComponent implements OnInit {
   messageObj: any = {
     "message": ""
   };
-
+  readonly ChatHubURI = environment.chatHubUrl
   loggedInUserInfo = JSON.parse(localStorage.getItem("login-user") ?? "{}");
   //loggedInUserInfo = localStorage.getItem("login-user");
   private hubConnection: HubConnection;
@@ -40,16 +41,11 @@ export class DashboardComponent implements OnInit {
     ) 
   {
     this.hubConnection = new HubConnectionBuilder()
-      .withUrl('https://localhost:7234/ChatHub')
+      .withUrl(this.ChatHubURI)
       .build();
   }
 ngOnInit() {
   console.log(this.loggedInUserInfo)
-  // const loggedInUser = localStorage.getItem('User');
-  // if (!loggedInUser) {
-  //   // Handle the case where the user is not logged in
-  //   return;
-  // }
      this.messageService.getUserReceivedMessages(this.loggedInUserInfo.id).subscribe((item:any)=>{
        if(item){
          this.messages=item;
@@ -86,7 +82,7 @@ this.userService.getAllUsers().subscribe(
   }
 );
 
-  this.hubConnection = new HubConnectionBuilder().withUrl('https://localhost:7234/ChatHub').build();
+  this.hubConnection = new HubConnectionBuilder().withUrl(this.ChatHubURI).build();
   const self = this;
   this.hubConnection.start()
     .then(() => {
