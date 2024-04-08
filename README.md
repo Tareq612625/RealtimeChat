@@ -48,11 +48,11 @@ Development Environment Setup
 
 7.Download source code from https://github.com/Tareq612625/RealtimeChat
 
-9.Run Web API application
+8.Run Web API application
 
-10. Run Angular Project
+9. Run Angular Project
     
-11. Browse http://localhost:4500 to view real time chat app in browser
+10. Browse http://localhost:4500 to view real time chat app in browser
 
 Database Configuration ( MSSQL Server )
 ---------------------------------------
