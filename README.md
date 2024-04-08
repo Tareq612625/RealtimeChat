@@ -3,21 +3,33 @@ Real Time Chat Applicaton
 This is a real-time chat application built with Angular, ASP.NET Core, SignalR, and SQL Server, following the Onion Architecture. It has the following functionalities:
 
 1.As a new user, you can register with your email address, first name, and last name.
+
 2.Registered users can log in with their email address.
+
 3.Logged-in users can see a user list and initiate chats. Chat always occurs between two users.
+
 4.Users can view chat history.
+
 5.The application has sign-out functionality.
 
 Technologies
 -----------------------------------
 1.ASP.NET Core 6
+
 2.Entity Framework Core 6
+
 3.Angular 17
+
 4.Signal R
+
 5.Sql Server
+
 6.Web API
+
 7.Bootstrap
+
 8.HTML
+
 9.CSS
 
 Development Environment Setup
