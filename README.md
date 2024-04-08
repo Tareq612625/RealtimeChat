@@ -10,20 +10,22 @@ This is a real-time chat application built with Angular, ASP.NET Core, SignalR, 
 
 Technologies
 -----------------------------------
-ASP.NET Core 6
-Entity Framework Core 6
-Angular 17
-Signal R
-Sql Server
-Web API
-Bootstrap
+1.ASP.NET Core 6
+2.Entity Framework Core 6
+3.Angular 17
+4.Signal R
+5.Sql Server
+6.Web API
+7.Bootstrap
+8.HTML
+9.CSS
 
 Development Environment Setup
 ---------------------------------------
-Install Latest Microsoft SQL Server
-Install Visual Studio 2022
-Install VS Code latest 
-Install the latest .NET Core 6 SDK
-Install the latest Node.js LTS
-Run npm install -g @angular/cli to install latest version of angular CLI
-Download source code from https://github.com/Tareq612625/RealtimeChat
+1.Install Latest Microsoft SQL Server
+2.Install Visual Studio 2022
+3.Install VS Code latest 
+4.Install the latest .NET Core 6 SDK
+5.Install the latest Node.js LTS
+6.Run npm install -g @angular/cli to install latest version of angular CLI
+7.Download source code from https://github.com/Tareq612625/RealtimeChat
