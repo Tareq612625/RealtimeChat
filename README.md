@@ -1,4 +1,9 @@
-Step 1: Clone the both project 
-step 2: open the api project by visual studio 2022 open the console then update-database commad run 
-step 3: run angular project and run the api project 
-step 4: from browser angular project url run then it will work hopely
+Real Time Chat Applicaton
+-----------------------------------
+This is a real-time chat application built with Angular, ASP.NET Core, SignalR, and SQL Server, following the Onion Architecture. It has the following functionalities:
+
+1.As a new user, you can register with your email address, first name, and last name.
+2.Registered users can log in with their email address.
+3.Logged-in users can see a user list and initiate chats. Chat always occurs between two users.
+4.Users can view chat history.
+5.The application has sign-out functionality.
