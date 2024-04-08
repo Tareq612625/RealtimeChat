@@ -23,11 +23,17 @@ Technologies
 Development Environment Setup
 ---------------------------------------
 1.Install Latest Microsoft SQL Server
+
 2.Install Visual Studio 2022
+
 3.Install VS Code latest 
+
 4.Install the latest .NET Core 6 SDK
+
 5.Install the latest Node.js LTS
+
 6.Run npm install -g @angular/cli to install latest version of angular CLI
+
 7.Download source code from https://github.com/Tareq612625/RealtimeChat
 9.Run Web API application
 10. Run Angular Project 
