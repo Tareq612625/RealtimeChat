@@ -35,8 +35,11 @@ Development Environment Setup
 6.Run npm install -g @angular/cli to install latest version of angular CLI
 
 7.Download source code from https://github.com/Tareq612625/RealtimeChat
+
 9.Run Web API application
-10. Run Angular Project 
+
+10. Run Angular Project
+    
 11. Browse http://localhost:4500 to view real time chat app in browser
 
 Database Configuration ( MSSQL Server )
