@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace OA_Service
 {
-    public class MessageService:IMessageService
+    public class MessageService : IMessageService
     {
         private readonly ApplicationDbContext _applicationDbContext;
         public MessageService(ApplicationDbContext applicationDbContext)
@@ -66,6 +66,12 @@ namespace OA_Service
             await _applicationDbContext.SaveChangesAsync();
             return message;
         }
+
+        public Message GetMessage(string messageId)
+        {
+            return _applicationDbContext.Message.Where(c => c.Id == messageId).FirstOrDefault();
+        }
+
         public enum DeleteTypeEnum
         {
             DeleteForMe,

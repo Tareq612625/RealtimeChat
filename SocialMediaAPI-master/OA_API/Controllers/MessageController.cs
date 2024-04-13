@@ -26,7 +26,7 @@ namespace OA_API.Controllers
         [HttpGet(nameof(GetAll))]
         public IActionResult GetAll()
         {
-            var obj = _messageService.GetAll();
+            var obj = _messageService.GetAll().OrderBy(c=>c.MessageDate);
             if (obj == null)
             {
                 return NotFound();

@@ -10,9 +10,6 @@ namespace OA_DataAccess
 {
     public class Message
     {
-
-        [Key]
-        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; }
         public string Sender { get; set; }
         public string Receiver { get; set; }
@@ -26,5 +23,17 @@ namespace OA_DataAccess
 
 
         public bool IsReceiverDeleted { get; set; }
+
+    }
+    public class MessageView
+    {
+        public string Id { get; set; }
+        public string Sender { get; set; }
+        public string Receiver { get; set; }
+        public DateTime MessageDate { get; set; }
+        public string Type { get; set; }
+        public string Content { get; set; }
+
+
     }
 }

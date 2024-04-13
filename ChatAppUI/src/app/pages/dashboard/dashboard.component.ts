@@ -10,6 +10,7 @@ import {MessageService} from '../../service/message.service'
 import {UserService} from '../../service/user.service'
 import { Guid } from 'guid-typescript';
 import { environment } from '../../environments/environment';
+import { Console } from 'console';
 
 @Component({
   selector: 'app-dashboard',
@@ -31,7 +32,6 @@ export class DashboardComponent implements OnInit {
   displayMessages: any[] = [];
   connectedUsers: any[] = [];
   chatUser:any;
-
   constructor(
     private http: HttpClient,
     private router: Router,
@@ -40,42 +40,27 @@ export class DashboardComponent implements OnInit {
     ) 
   {
     this.hubConnection = new HubConnectionBuilder()
-      .withUrl(this.ChatHubURI)
-      .build();
+    .withUrl(environment.chatHubUrl)
+    .build();
   }
+
 ngOnInit() {
-  console.log(this.loggedInUserInfo)
      this.messageService.getUserReceivedMessages(this.loggedInUserInfo.id).subscribe((item:any)=>{
        if(item){
          this.messages=item;
          this.messages.forEach(x=>{
-          x.type=x.receiver===this.loggedInUserInfo.id?'recieved':'sent';
-         })
+          x.type=x.receiver==this.loggedInUserInfo.id?'recieved':'sent';
+         })       
          console.log(this.messages);
        }
      })
 
-//   this.userService.getAllUsers().subscribe(
-//     (user: any) => {
-//       if(user){
-//        //this.users=user.filter(x=>x.email!==this.loggedInUserInfo);
-//         // this.users.forEach(item=>{
-//         //   item['isActive']=false;
-//         // })
-//         this.makeItOnline();
-//         }
-//     },
-//     err => {
-//         console.log(err);
-//     }
-// );
 this.userService.getAllUsers().subscribe(
   (data:any) => {
     if(data){
       const array = Object.values(data);
       for (let i = 0; i < array.length; i++) {
         const obj = array[i];
-        console.log(obj);
         this.users.push(obj);
       }     
     this.users=this.users.filter(x=>x.email!==this.loggedInUserInfo.email);
@@ -89,30 +74,29 @@ this.userService.getAllUsers().subscribe(
     console.log(err);
   },
 );
-
-
-this.hubConnection = new HubConnectionBuilder().withUrl(this.ChatHubURI).build();
+var obj = {
+  UserId:this.loggedInUserInfo.id,
+  FullName: this.loggedInUserInfo.firstName,
+  Username:this.loggedInUserInfo.email
+};
+this.hubConnection = new HubConnectionBuilder().withUrl(environment.chatHubUrl).build();
 const self = this;
 this.hubConnection.start()
   .then(() => {
-    self.hubConnection.invoke("PublishUserOnConnect", this.loggedInUserInfo.id, this.loggedInUserInfo.firstName, this.loggedInUserInfo.userName)
-      .then(() => console.log('User Sent Successfully'))
-      .catch(err => console.error(err));
+    self.hubConnection.invoke("PublishUserOnConnect", this.loggedInUserInfo.id.toString(), this.loggedInUserInfo.firstName.toString(), this.loggedInUserInfo.email.toString())
+    .then(() => console.log('User connected successfully'))
+    .catch(err => console.error('Error connecting user:', err));
 
-    this.hubConnection.on("BroadcastUserOnConnect", (Usrs: any[]) => {
+    this.hubConnection.on("BroadcastUserOnConnect", Usrs => {
       this.connectedUsers = Usrs;
       this.makeItOnline();
     });
-    this.hubConnection.on("BroadcastUserOnDisconnect", (Usrs: any[]) => {
+    this.hubConnection.on("BroadcastUserOnDisconnect", Usrs => {
       this.connectedUsers = Usrs;
-      this.users.forEach((item: any) => {
-        item.isOnline = false;
-      });
       this.makeItOnline();
     });
   })
   .catch(err => console.log(err));
-
 
   this.hubConnection.on('BroadCastDeleteMessage', (connectionId, message) => {
     let deletedMessage = this.messages.find(x => x.id === message.id);
@@ -120,50 +104,85 @@ this.hubConnection.start()
       deletedMessage.isReceiverDeleted = message.isReceiverDeleted;
       deletedMessage.isSenderDeleted = message.isSenderDeleted;
       if (deletedMessage.isReceiverDeleted && deletedMessage.receiver === this.chatUser.id) {
-        this.displayMessages = this.messages.filter(x => (x.type === 'sent' && x.receiver === this.chatUser.id) || (x.type === 'received' && x.sender === this.chatUser.id));
+        this.displayMessages=this.messages.filter(x => (x.type == 'sent' && x.sender == this.loggedInUserInfo.id && x.receiver == this.chatUser.id) || (x.type == 'recieved' && x.sender == this.chatUser.id && x.receiver == this.loggedInUserInfo.id));
       }
     }
   });
 
   this.hubConnection.on('ReceiveDM', (connectionId, message) => {
-    console.log(message);
-    message.type = 'received';
+    message.type = 'recieved';
     this.messages.push(message);
-    let curentUser = this.users.find(x => x.id === message.sender);
+    let curentUser = this.users.find(x => x.id == message.sender);
     this.chatUser = curentUser;
     this.users.forEach(item => {
       item['isActive'] = false;
     });
     var user = this.users.find(x => x.id == this.chatUser.id);
     user['isActive'] = true;
-    this.displayMessages = this.messages.filter(x => (x.type === 'sent' && x.receiver === this.chatUser.id) || (x.type === 'received' && x.sender === this.chatUser.id));
-  });
+    this.displayMessages = this.messages.filter(x => (x.type === 'sent' && x.receiver == this.chatUser.id) || (x.type === 'recieved' && x.sender == this.chatUser.id));
+  })
 }
 
-  
-  SendDirectMessage() {
-    if (this.messageObj.message != '' && this.messageObj.message.trim() != '') {
-      let guid=Guid.create();
-      var msg = {
-        id:guid.toString(),
-        sender: this.loggedInUserInfo.id,
-        receiver:this.chatUser.id,
-        messageDate: new Date(),
-        type: 'sent',
-        content: this.messageObj.message
-      };
-      this.messages.push(msg);
-      this.displayMessages = this.messages.filter(x => (x.type === 'sent' && x.receiver === 'jhon@gmail.com') || (x.type === 'recieved' && x.sender ==='mdazizkhn@gmail.com'));
-      //console.log(this.displayMessages)
-      this.hubConnection.invoke('SendMessageToUser', msg)
-        .then(() => console.log('Message to user Sent Successfully'))
-        .catch(err => console.error(err));
-    }
+
+SendDirectMessage() {
+  if (this.messageObj.message != '' && this.messageObj.message.trim() != '') {
+    let guid = Guid.create();
+    var msg = {
+      Id: guid.toString(),
+      Sender: this.loggedInUserInfo.id,
+      Receiver: this.chatUser.id,
+      MessageDate: new Date(),
+      Message: this.messageObj.message,
+      ReceiverMessage: this.messageObj.message,
+      m:this.messageObj.Message
+    };
+    var msg1 = {
+      id:guid.toString(),
+      sender: this.loggedInUserInfo.id,
+      receiver: this.chatUser.id,
+      messageDate: new Date(),
+      type: 'sent',
+      content: this.messageObj.message  
+    };
+
+    this.messages.push(msg1);
+    this.displayMessages= this.messages.filter(x => (x.type == 'sent' && x.sender == this.loggedInUserInfo.id && x.receiver == this.chatUser.id) || (x.type == 'recieved' && x.sender == this.chatUser.id && x.receiver == this.loggedInUserInfo.id));
+this.hubConnection.invoke('SendMessageToUser', guid.toString(), msg.Sender.toString(), msg.Receiver.toString(),msg.Message.toString())
+      .then(() => {
+        console.log('Message to user Sent Successfully');
+        this.messageObj.message = '';
+      })
+      .catch(err => console.error(err));
   }
+}
+
+  // SendDirectMessage() {
+  //   if (this.messageObj.message != '' && this.messageObj.message.trim() != '') {
+  //     let guid=Guid.create();
+  //     var msg = {
+  //       Id:guid.toString(),
+  //       Sender: this.loggedInUserInfo.id,
+  //       Receiver:this.chatUser.id,
+  //       MessageDate: new Date(),
+  //       //type: 'sent',
+  //       Content: this.messageObj.message
+  //     };
+  //     this.messages.push(msg);
+  //     this.displayMessages = this.messages.filter(x => (x.type === 'sent' && x.receiver === this.chatUser.id) || (x.type === 'recieved' && x.sender === this.chatUser.id));
+  //     console.log(msg)
+  //     console.log(this.loggedInUserInfo.id)
+  //     console.log(this.chatUser.id)
+  //     console.log(this.messageObj.message)
+  //     this.hubConnection.invoke('SendMessageToUserNew', guid.toString(),this.loggedInUserInfo.id.toString(),this.chatUser.id.toString(),new Date(),this.messageObj.message)
+  //       .then(() => console.log('Message to user Sent Successfully'))
+  //       .catch(err => console.error(err));
+  //   }
+  // }
   openChat(user: any): void {
     user.isActive = true;
     this.chatUser = user;
-    this.displayMessages = this.messages.filter(x => (x.type === 'sent' && x.receiver === this.chatUser.id) || (x.type === 'received' && x.sender === this.chatUser.id));
+    this.displayMessages = this.messages.filter(x => (x.type == 'sent' && x.sender == this.loggedInUserInfo.id && x.receiver == this.chatUser.id) || (x.type == 'recieved' && x.sender == this.chatUser.id && x.receiver == this.loggedInUserInfo.id));
+  console.log( this.displayMessages)
   }
    makeItOnline() {
     if (this.connectedUsers && this.users) {
@@ -182,7 +201,7 @@ this.hubConnection.start()
       'message': message,
       'deletedUserId': this.loggedInUserInfo.id
     };
-    this.hubConnection.invoke('DeleteMessage', deleteMessage)
+    this.hubConnection.invoke('DeleteMessage', deleteMessage.deleteType.toString(),deleteMessage.deletedUserId.toString(),message.id)
       .then(() => console.log('publish delete request'))
       .catch(err => console.error(err));
     message.isSenderDeleted = isSender;

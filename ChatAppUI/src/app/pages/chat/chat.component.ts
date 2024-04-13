@@ -8,9 +8,7 @@ import { CommonModule } from '@angular/common';
 import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
 import { environment } from '../../environments/environment';
 
-import {MessageService} from '../../service/message.service'
-import {UserService} from '../../service/user.service'
-import { Guid } from 'guid-typescript';
+
 
 @Component({
   selector: 'app-test',

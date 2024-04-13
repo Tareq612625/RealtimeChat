@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   apiBaseUrl:'https://localhost:7234/api',
-  chatHubUrl:'https://localhost:7234/chathub'
+  chatHubUrl:'https://localhost:7234/ChatHub'
 };
 
 /*

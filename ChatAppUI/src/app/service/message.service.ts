@@ -10,7 +10,7 @@ import { Injectable } from "@angular/core";
 
     }
     getUserReceivedMessages(userId:string) {
-        return this.http.get(this.BaseURI + '/Message');
+        return this.http.get(this.BaseURI + '/Message/GetAll');
       }
 
       // deleteMessage(message) {

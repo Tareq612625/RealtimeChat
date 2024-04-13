@@ -13,5 +13,6 @@ namespace OA_Service
         IEnumerable<Message> GetReceivedMessages(string email);
         void Add(Message message);
         Task<Message> DeleteMessage(MessageDeleteModel messageDeleteModel);
+        Message GetMessage(string messageId);
     }
 }
