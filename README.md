@@ -62,3 +62,5 @@ Update the ConnectionString int appsettings.json , so that application can point
   "DefaultConnection": "Data Source=your server name;Initial Catalog=dbname;User ID=sa;Password=123;Integrated Security=false;MultipleActiveResultSets=True;TrustServerCertificate=True"
 }
 When you run update-database command, the migrations will be applied and the database will be automatically created.
+
+![API](https://github.com/Tareq612625/RealtimeChat/assets/61448480/6271e613-743b-472e-b86f-7a1054d5798b)
