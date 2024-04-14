@@ -64,3 +64,17 @@ Update the ConnectionString int appsettings.json , so that application can point
 When you run update-database command, the migrations will be applied and the database will be automatically created.
 
 ![API](https://github.com/Tareq612625/RealtimeChat/assets/61448480/6271e613-743b-472e-b86f-7a1054d5798b)
+
+![Registration](https://github.com/Tareq612625/RealtimeChat/assets/61448480/40b8cc4e-d248-4295-b4a7-308a2f21f503)
+
+
+![Login](https://github.com/Tareq612625/RealtimeChat/assets/61448480/07edcbb1-708f-4939-9eef-12574d94bfc4)
+
+![MessagePage](https://github.com/Tareq612625/RealtimeChat/assets/61448480/404514ce-dc5b-4068-bd63-55f618b47943)
+
+![ChatPage](https://github.com/Tareq612625/RealtimeChat/assets/61448480/96777c6b-a594-4d33-8375-35bb611068c1)
+
+![ChattedUserPage](https://github.com/Tareq612625/RealtimeChat/assets/61448480/5b4799d0-e23b-49f0-bd19-bdc19e5122b9)
+
+![RemoveMessage](https://github.com/Tareq612625/RealtimeChat/assets/61448480/1f999904-071b-43ec-9b12-933bbffd5657)
+
